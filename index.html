@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Info Wisata by Elvan Sinaga</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sky: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+            },
+            teal: {
+              400: '#2dd4bf',
+              700: '#0f766e',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc; /* slate-50 */
+      color: #1e293b; /* slate-800 */
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Hide scrollbar for clean UI */
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Fade In Animation */
+    .fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Bounce Loading Animation */
+    .typing-dot {
+      animation: typingBounce 1.4s infinite ease-in-out both;
+    }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes typingBounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* View Management */
+    .view-container {
+      display: none;
+    }
+    .view-container.active {
+      display: block;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('home')">
+        <div class="bg-sky-100 p-2 rounded-xl text-sky-600">
+          <i class="ph-fill ph-map-pin text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg text-slate-800 leading-tight">Info Wisata</h1>
+          <p class="text-[10px] text-slate-500 font-medium">by Elvan Sinaga</p>
+        </div>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex gap-6 items-center">
+        <button onclick="navigate('home')" id="nav-desktop-home" class="font-medium text-sky-600">Beranda</button>
+        <button onclick="navigate('destinations')" id="nav-desktop-destinations" class="font-medium text-slate-500 hover:text-slate-800">Destinasi</button>
+        <button onclick="navigate('about')" id="nav-desktop-about" class="font-medium text-slate-500 hover:text-slate-800">Tentang</button>
+        <button onclick="navigate('chatbot')" class="bg-sky-600 text-white px-5 py-2 rounded-full font-semibold text-sm hover:bg-sky-700 transition flex items-center gap-2 shadow-sm shadow-sky-200">
+          <i class="ph-fill ph-chat-circle text-lg"></i>
+          Tanya Chatbot
+        </button>
+      </nav>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="md:hidden p-2 text-slate-600" onclick="toggleMobileMenu()">
+        <i class="ph ph-list text-2xl" id="mobile-menu-icon"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Dropdown Nav -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 px-4 py-4 space-y-4 shadow-lg absolute w-full z-40">
+      <button onclick="navigate('home'); toggleMobileMenu()" class="block w-full text-left font-medium text-slate-700">Beranda</button>
+      <button onclick="navigate('destinations'); toggleMobileMenu()" class="block w-full text-left font-medium text-slate-700">Destinasi</button>
+      <button onclick="navigate('about'); toggleMobileMenu()" class="block w-full text-left font-medium text-slate-700">Tentang</button>
+      <button onclick="navigate('chatbot'); toggleMobileMenu()" class="bg-sky-600 text-white px-4 py-3 rounded-xl font-semibold text-sm w-full text-center flex justify-center items-center gap-2">
+        <i class="ph-fill ph-chat-circle text-lg"></i> Buka Chatbot
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-grow flex flex-col relative w-full">
+    
+    <!-- HOME VIEW -->
+    <div id="view-home" class="view-container active pb-24 md:pb-12 fade-in w-full max-w-5xl mx-auto px-4 pt-6">
+      <!-- Hero Section -->
+      <div class="bg-sky-600 rounded-3xl p-8 md:p-12 text-white shadow-xl shadow-sky-200 relative overflow-hidden mb-10">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-40 translate-x-1/3 -translate-y-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-sky-400 rounded-full mix-blend-multiply filter blur-3xl opacity-40 -translate-x-1/3 translate-y-1/3"></div>
+        
+        <div class="relative z-10 max-w-2xl">
+          <span class="inline-block py-1 px-3 rounded-full bg-sky-500/50 backdrop-blur-sm text-xs font-semibold tracking-wider uppercase mb-4">AI Travel Assistant</span>
+          <h2 class="text-3xl md:text-5xl font-bold mb-4 leading-tight">Temukan informasi wisata favoritmu dalam satu tempat.</h2>
+          <p class="text-sky-100 mb-8 md:text-lg">Dapatkan detail lokasi, harga tiket, jam buka, dan akses terbaru untuk destinasi unggulan di Indonesia dengan mudah melalui asisten pintar kami.</p>
+          <button onclick="navigate('chatbot')" class="bg-white text-sky-700 px-6 py-3 rounded-xl font-bold hover:bg-sky-50 transition-colors shadow-lg flex items-center gap-2 w-fit">
+            <i class="ph-fill ph-chat-circle text-xl"></i> Mulai Chat Sekarang
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-6 flex justify-between items-end">
+        <div>
+          <h3 class="text-2xl font-bold text-slate-800">Destinasi Unggulan</h3>
+          <p class="text-slate-500 text-sm mt-1">Eksplorasi keindahan alam Nusantara</p>
+        </div>
+        <button onclick="navigate('destinations')" class="text-sky-600 font-medium text-sm flex items-center hover:text-sky-800">
+          Lihat Semua <i class="ph-bold ph-caret-right ml-1"></i>
+        </button>
+      </div>
+
+      <div id="home-destinations-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- DESTINATIONS VIEW -->
+    <div id="view-destinations" class="view-container pb-24 md:pb-12 fade-in max-w-5xl mx-auto px-4 pt-6 w-full">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold text-slate-800">Semua Destinasi</h2>
+        <p class="text-slate-500 mt-2">Pilih destinasi di bawah ini untuk melihat detail lengkap atau tanyakan langsung pada chatbot kami.</p>
+      </div>
+      <div id="all-destinations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- DETAIL VIEW -->
+    <div id="view-detail" class="view-container pb-24 md:pb-12 fade-in bg-white w-full">
+      <div class="w-full h-64 md:h-96 relative">
+        <img id="detail-image" src="" alt="Destination" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-black/40"></div>
+        <button onclick="navigate('home')" class="absolute top-4 left-4 bg-white/20 hover:bg-white/40 backdrop-blur-md p-2 rounded-full text-white transition">
+          <i class="ph-bold ph-arrow-left text-2xl"></i>
+        </button>
+        <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 max-w-5xl mx-auto">
+          <h2 id="detail-name" class="text-3xl md:text-5xl font-bold text-white mb-2">Nama Destinasi</h2>
+          <div class="flex items-center gap-2 text-white/90 text-sm md:text-base">
+            <i class="ph-fill ph-map-pin text-lg"></i>
+            <span id="detail-location">Lokasi</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-4xl mx-auto px-4 py-8">
+        <div class="flex justify-end -mt-14 mb-8 relative z-10">
+          <button id="detail-chat-btn" onclick="" class="bg-sky-600 text-white px-6 py-3 rounded-2xl font-bold hover:bg-sky-700 transition shadow-lg shadow-sky-200 flex items-center gap-2">
+            <i class="ph-fill ph-chat-circle text-xl"></i> Tanyakan kepada Chatbot
+          </button>
+        </div>
+
+        <p id="detail-desc" class="text-lg text-slate-700 leading-relaxed mb-10">Deskripsi destinasi.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+            <div class="flex items-center gap-3 mb-4 text-sky-700 font-bold">
+              <i class="ph-fill ph-ticket text-2xl"></i>
+              <h3 class="text-lg">Harga Tiket</h3>
+            </div>
+            <p id="detail-price" class="text-slate-700 font-medium">Harga</p>
+            <p id="detail-price-notes-container" class="text-slate-500 text-sm mt-3 flex items-start gap-2 hidden">
+              <i class="ph-fill ph-warning text-amber-500 mt-0.5 text-base flex-shrink-0"></i>
+              <span id="detail-price-notes">Catatan</span>
+            </p>
+          </div>
+
+          <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+            <div class="flex items-center gap-3 mb-4 text-teal-700 font-bold">
+              <i class="ph-fill ph-clock text-2xl"></i>
+              <h3 class="text-lg">Jam Operasional & Status</h3>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <span class="text-xs font-semibold text-slate-400 uppercase">Jam Buka</span>
+                <p id="detail-hours" class="text-slate-700 font-medium">Jam</p>
+              </div>
+              <div>
+                <span class="text-xs font-semibold text-slate-400 uppercase">Status Akses</span>
+                <p id="detail-status" class="text-slate-700 font-medium">Status</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-8">
+          <div>
+            <div class="flex items-center gap-3 mb-4 text-slate-800 font-bold">
+              <i class="ph-fill ph-person-simple-walk text-sky-500 text-2xl"></i>
+              <h3 class="text-xl">Aktivitas Wisata</h3>
+            </div>
+            <p id="detail-activities" class="text-slate-600 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">Aktivitas</p>
+          </div>
+          <div>
+            <div class="flex items-center gap-3 mb-4 text-slate-800 font-bold">
+              <i class="ph-fill ph-warning text-amber-500 text-2xl"></i>
+              <h3 class="text-xl">Hal yang Harus Diperhatikan</h3>
+            </div>
+            <p id="detail-rules" class="text-slate-600 bg-amber-50/50 p-5 rounded-2xl border border-amber-100">Aturan</p>
+          </div>
+        </div>
+
+        <hr class="my-10 border-slate-200" />
+        <div>
+          <h4 class="font-bold text-slate-400 text-sm uppercase mb-4 tracking-wider">Sumber Informasi</h4>
+          <ul id="detail-sources" class="space-y-2"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHATBOT VIEW -->
+    <div id="view-chatbot" class="view-container fade-in flex flex-col h-[calc(100vh-64px)] md:h-[calc(100vh-64px)] w-full max-w-3xl mx-auto bg-slate-50 relative pb-[70px] md:pb-0">
+      
+      <div id="chat-context-banner" class="hidden bg-sky-50 text-sky-700 py-2 px-4 text-xs font-medium text-center border-b border-sky-100 flex items-center justify-center gap-2">
+        <i class="ph-fill ph-info"></i> <span id="chat-context-text">Berbicara tentang ...</span>
+      </div>
+
+      <div id="chat-messages" class="flex-grow overflow-y-auto p-4 space-y-4">
+        <!-- Messages will be injected here -->
+      </div>
+
+      <!-- Typing Indicator (Hidden by default) -->
+      <div id="typing-indicator" class="hidden px-4 pb-4 flex justify-start">
+         <div class="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center text-white mr-2 flex-shrink-0 mt-1">
+            <i class="ph-fill ph-robot"></i>
+          </div>
+        <div class="bg-white border border-slate-200 rounded-2xl rounded-tl-sm p-4 shadow-sm flex gap-1 items-center h-11">
+          <div class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></div>
+          <div class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></div>
+          <div class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></div>
+        </div>
+      </div>
+
+      <div class="bg-white border-t border-slate-200 p-3 md:p-4 fixed md:relative bottom-16 md:bottom-0 w-full max-w-3xl z-30 mx-auto left-0 right-0">
+        <div class="flex overflow-x-auto gap-2 mb-3 pb-2 scrollbar-hide w-full">
+          <button onclick="handleQuickReply('Lokasi wisata')" class="whitespace-nowrap bg-sky-50 text-sky-700 border border-sky-100 hover:bg-sky-100 px-3 py-1.5 rounded-full text-xs font-semibold transition">Lokasi wisata</button>
+          <button onclick="handleQuickReply('Harga tiket')" class="whitespace-nowrap bg-sky-50 text-sky-700 border border-sky-100 hover:bg-sky-100 px-3 py-1.5 rounded-full text-xs font-semibold transition">Harga tiket</button>
+          <button onclick="handleQuickReply('Jam buka')" class="whitespace-nowrap bg-sky-50 text-sky-700 border border-sky-100 hover:bg-sky-100 px-3 py-1.5 rounded-full text-xs font-semibold transition">Jam buka</button>
+          <button onclick="handleQuickReply('Aktivitas wisata')" class="whitespace-nowrap bg-sky-50 text-sky-700 border border-sky-100 hover:bg-sky-100 px-3 py-1.5 rounded-full text-xs font-semibold transition">Aktivitas wisata</button>
+          <button onclick="handleQuickReply('Status akses terbaru')" class="whitespace-nowrap bg-sky-50 text-sky-700 border border-sky-100 hover:bg-sky-100 px-3 py-1.5 rounded-full text-xs font-semibold transition">Status akses terbaru</button>
+        </div>
+        <form onsubmit="handleChatSubmit(event)" class="flex gap-2 items-center">
+          <input type="text" id="chat-input" placeholder="Tanyakan sesuatu..." class="flex-grow bg-slate-50 border border-slate-200 rounded-full px-4 py-3 text-sm focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition" autocomplete="off" />
+          <button type="submit" id="chat-submit-btn" class="bg-sky-600 text-white p-3 rounded-full hover:bg-sky-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0">
+            <i class="ph-bold ph-paper-plane-right text-lg"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ABOUT VIEW -->
+    <div id="view-about" class="view-container pb-24 md:pb-12 fade-in w-full max-w-3xl mx-auto px-4 pt-10 text-center">
+      <div class="w-20 h-20 bg-sky-100 text-sky-600 rounded-3xl mx-auto flex items-center justify-center mb-6 shadow-sm">
+        <i class="ph-fill ph-map-trifold text-4xl"></i>
+      </div>
+      <h2 class="text-2xl font-bold text-slate-800 mb-2">Info Wisata by Elvan Sinaga</h2>
+      <p class="text-slate-500 mb-8 max-w-lg mx-auto">Prototipe layanan informasi pariwisata cerdas berbasis AI. Membantu Anda mengeksplorasi destinasi memukau Indonesia.</p>
+      
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 text-left mb-8">
+        <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+          <i class="ph-fill ph-info text-sky-500 text-lg"></i> Tentang Prototipe Ini
+        </h3>
+        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+          Aplikasi ini adalah prototipe dari UI/UX, Frontend, dan sistem Chatbot lokal. <strong>Data yang digunakan bersumber dari panduan yang ada per Oktober 2026.</strong> 
+        </p>
+        <p class="text-sm text-slate-600 leading-relaxed">
+          Catatan: Aplikasi ini belum terhubung langsung ke WhatsApp, API AI eksternal, atau database <em>real-time</em>. Fungsi chatbot dijalankan melalui algoritma pencocokan kata kunci (NLP lokal) di dalam <em>browser</em> Anda.
+        </p>
+      </div>
+      <p class="text-xs text-slate-400">© 2026 Tim Pengembang Info Wisata.</p>
+    </div>
+
+  </main>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="md:hidden fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around items-center h-16 z-40 pb-safe">
+    <button onclick="navigate('home')" id="nav-mobile-home" class="flex flex-col items-center justify-center w-full h-full text-sky-600">
+      <i class="ph-fill ph-house text-xl mb-1"></i>
+      <span class="text-[10px] font-medium">Beranda</span>
+    </button>
+    <button onclick="navigate('destinations')" id="nav-mobile-destinations" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
+      <i class="ph-fill ph-map-pin text-xl mb-1"></i>
+      <span class="text-[10px] font-medium">Destinasi</span>
+    </button>
+    <button onclick="navigate('chatbot')" id="nav-mobile-chatbot" class="relative flex flex-col items-center justify-center w-full h-full text-slate-400 -mt-5">
+      <div id="nav-mobile-chatbot-icon" class="p-4 rounded-full shadow-lg text-white mb-1 transition-transform bg-sky-600">
+         <i class="ph-fill ph-chat-circle text-2xl"></i>
+      </div>
+      <span id="nav-mobile-chatbot-text" class="text-[10px] font-medium">Chat</span>
+    </button>
+    <button onclick="navigate('about')" id="nav-mobile-about" class="flex flex-col items-center justify-center w-full h-full text-slate-400">
+      <i class="ph-fill ph-info text-xl mb-1"></i>
+      <span class="text-[10px] font-medium">Tentang</span>
+    </button>
+  </nav>
+
+  <script>
+    // --- DATA & KNOWLEDGE BASE ---
+    const KNOWLEDGE_BASE = {
+      "pantai_cermin": {
+        id: "pantai_cermin",
+        name: "Pantai Cermin",
+        image: "https://images.unsplash.com/photo-1520483601560-389dff434fdf?q=80&w=800&auto=format&fit=crop",
+        location: "Desa Pantai Cermin Kanan, Kec. Pantai Cermin, Kab. Serdang Bedagai, Sumatera Utara.",
+        description: "Pemandangan pesisir Selat Malaka, garis pantai berpasir, panorama matahari terbenam, kuliner laut, dan wahana rekreasi keluarga.",
+        price: "Sekitar Rp10.000–Rp15.000 per orang untuk kawasan pantai umum.",
+        priceNotes: "Pantai Cermin Theme Park merupakan tempat berbeda dengan tarif tersendiri. Jangan menggunakan harga tiket pantai umum sebagai harga tiket Theme Park.",
+        hours: "Kawasan pantai tidak memiliki satu jadwal operasional baku. Listing Pantai Cermin Theme Park mencantumkan pukul 07.00–23.59. Konfirmasi ulang jadwal kepada pengelola tempat.",
+        status: "Buka umum",
+        activities: "Menikmati pemandangan, berfoto, bermain pasir atau air sesuai kondisi, mencoba wahana di Theme Park, dan menikmati kuliner laut.",
+        rules: "Perhatikan keselamatan saat bermain air di pantai.",
+        sources: [
+          "Traveloka: Pantai Cermin Wisata Bahari",
+          "Traveloka: Pantai Cermin Theme Park Tickets"
+        ],
+        keywords: ["pantai cermin", "serdang bedagai", "cermin", "theme park cermin"]
+      },
+      "danau_toba": {
+        id: "danau_toba",
+        name: "Danau Toba (Bukit Holbung)",
+        image: "https://images.unsplash.com/photo-1549474149-bc9195b4e943?q=80&w=800&auto=format&fit=crop",
+        location: "Desa Hariara Pohan, Kec. Harian, Kab. Samosir, Sumatera Utara.",
+        description: "Danau vulkanik luas. Untuk spesifik, Bukit Holbung menawarkan panorama menawan Danau Toba dari perbukitan hijau.",
+        price: "Sekitar Rp5.000 per orang di Bukit Holbung.",
+        priceNotes: "Harga ini berlaku khusus untuk Bukit Holbung sebagai objek wisata tertentu, bukan seluruh kawasan Danau Toba.",
+        hours: "Tercantum 24 jam untuk Bukit Holbung.",
+        status: "Buka",
+        activities: "Menikmati pemandangan danau, berjalan kaki, trekking ringan, dan berfoto.",
+        rules: "Jaga kebersihan lingkungan bukit dan berhati-hati saat trekking.",
+        sources: ["Indonesia Travel: 5 Wisata Danau Toba"],
+        keywords: ["danau toba", "toba", "bukit holbung", "holbung", "samosir"]
+      },
+      "gunung_rinjani": {
+        id: "gunung_rinjani",
+        name: "Gunung Rinjani",
+        image: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?q=80&w=800&auto=format&fit=crop",
+        location: "Pulau Lombok, Provinsi Nusa Tenggara Barat.",
+        description: "Panorama pegunungan, lanskap gunung berapi, dan keindahan magis Danau Segara Anak.",
+        price: "Tarif acuan: WNI (Hari Kerja Rp50.000, Libur Rp75.000, Pelajar Rp25.000), WNA Rp250.000 (Jalur Sembalun, Senaru, Torean).",
+        priceNotes: "Harga di atas merupakan tarif acuan yang diumumkan pada November 2025. Harga tersebut bukan jaminan bahwa jalur pendakian sedang tersedia.",
+        hours: "Mengikuti sistem kuota dan registrasi pendakian Balai TNGR.",
+        status: "Wisata alam dibuka terbatas mulai 1 Sep 2026. Pemesanan eRinjani dihentikan sementara (risiko kebakaran). Jalur Torean & Senaru ditutup sementara (info 30 Sep 2026).",
+        activities: "Menikmati panorama atau melakukan pendakian hanya ketika aktivitas tersebut diizinkan oleh pengelola.",
+        rules: "Jangan mendaki jika status penutupan sedang diberlakukan. Waspada risiko kebakaran hutan.",
+        sources: [
+          "Rinjani National Park: Dibuka Terbatas",
+          "Rinjani National Park: Jalur Torean Ditutup",
+          "Rinjani National Park: Tarif Tiket"
+        ],
+        keywords: ["gunung rinjani", "rinjani", "segara anak", "lombok", "torean", "senaru", "sembalun"]
+      },
+      "labuan_bajo": {
+        id: "labuan_bajo",
+        name: "Labuan Bajo & TN Komodo",
+        image: "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=800&auto=format&fit=crop",
+        location: "Kabupaten Manggarai Barat, Provinsi Nusa Tenggara Timur.",
+        description: "Pintu masuk TN Komodo dengan pemandangan pulau eksotis, bukit karang, perairan biru, terumbu karang, dan habitat Komodo.",
+        price: "Tiket TN Komodo: WNI (Hari Kerja Rp50.000, Libur Rp75.000), WNA Rp250.000.",
+        priceNotes: "Biaya kapal, penginapan, dan layanan operator wisata tidak termasuk dalam harga tiket masuk.",
+        hours: "Tergantung objek wisata. Contoh Padar Selatan: Sesi 1 (05.00–08.00), Sesi 2 (08.00–11.00), Sesi 3 (15.00–18.00) WITA.",
+        status: "Beroperasi dengan sistem kuota. Kuota TN Komodo max 1.000 orang/hari via reservasi SIORA (H-1).",
+        activities: "Trekking pada jalur yang diizinkan, pengamatan komodo bersama ranger, snorkeling, dan menikmati panorama laut.",
+        rules: "Jangan menyarankan pengunjung mendekati atau memberi makan komodo. Ikuti arahan ranger. Periksa kuota sebelum berangkat.",
+        sources: [
+          "Indonesia Travel: Labuan Bajo",
+          "TN Komodo KSDAE: Harga Karcis",
+          "Pengumuman Kuota TN Komodo 1000 Visitors"
+        ],
+        keywords: ["labuan bajo", "bajo", "komodo", "taman nasional komodo", "pulau padar", "manggarai barat", "pink beach"]
+      }
+    };
+
+    const DESTINATIONS_ARRAY = Object.values(KNOWLEDGE_BASE);
+
+    // --- STATE MANAGEMENT ---
+    let state = {
+      activeView: 'home',
+      selectedDestId: null,
+      chatContext: null,
+      isMobileMenuOpen: false,
+      messages: [
+        { 
+          id: 1, 
+          sender: 'bot', 
+          text: "Halo, selamat datang di Info Wisata by Elvan Sinaga! 👋🌴 Aku siap membantu kamu mencari informasi Pantai Cermin, Danau Toba, Gunung Rinjani, dan Labuan Bajo. Kamu ingin mengetahui lokasi, harga tiket, jam buka, atau aktivitas wisata?" 
+        }
+      ],
+      isBotTyping: false
+    };
+
+    // --- CHATBOT LOGIC ---
+    const CHATBOT_LOGIC = {
+      greetings: ["halo", "hi", "hai", "ping", "p", "selamat pagi", "selamat siang", "selamat sore", "selamat malam", "info wisata"],
+      intents: {
+        location: ["di mana", "dimana", "lokasi", "alamat", "rute", "jalan", "letak"],
+        price: ["harga", "tiket", "biaya", "bayar", "tarif", "htm"],
+        hours: ["jam", "buka", "tutup", "operasional", "jadwal", "kapan"],
+        status: ["status", "akses", "kuota", "ditutup", "dibuka", "sekarang bisa", "reservasi"],
+        activities: ["aktivitas", "ngapain", "kegiatan", "bisa apa", "wahana", "daya tarik", "menarik"],
+      },
+      
+      processMessage: function(message, contextDestination = null) {
+        const lowerMsg = message.toLowerCase();
+        let detectedDestinations = [];
+        let detectedIntents = [];
+
+        // Greetings
+        if (this.greetings.some(g => lowerMsg === g || lowerMsg.startsWith(g + " "))) {
+          return "Halo, selamat datang di Info Wisata by Elvan Sinaga! 👋🌴 Aku siap membantu kamu mencari informasi Pantai Cermin, Danau Toba, Gunung Rinjani, dan Labuan Bajo. Kamu ingin mengetahui lokasi, harga tiket, jam buka, atau aktivitas wisata?";
+        }
+
+        // Entities (Destinations)
+        for (const [key, dest] of Object.entries(KNOWLEDGE_BASE)) {
+          if (dest.keywords.some(kw => lowerMsg.includes(kw))) {
+            detectedDestinations.push(key);
+          }
+        }
+
+        // Intents
+        for (const [intentName, keywords] of Object.entries(this.intents)) {
+          if (keywords.some(kw => lowerMsg.includes(kw))) {
+            detectedIntents.push(intentName);
+          }
+        }
+
+        // Out of scope
+        const outOfScopeKeywords = ["hotel", "pesawat", "booking", "laptop", "bengkel", "rumah sakit", "cuaca"];
+        if (outOfScopeKeywords.some(kw => lowerMsg.includes(kw))) {
+          return "Maaf, ya! 😊 Aku saat ini berfokus pada informasi dasar wisata untuk 4 destinasi (Pantai Cermin, Danau Toba, Rinjani, Labuan Bajo). Aku belum memiliki basis pengetahuan untuk hal tersebut. Kamu ingin mengetahui lokasi, harga tiket, jam buka, atau aktivitas wisata?";
+        }
+
+        // Resolution
+        let targetDest = null;
+        if (detectedDestinations.length > 0) {
+          targetDest = KNOWLEDGE_BASE[detectedDestinations[0]];
+        } else if (contextDestination) {
+          targetDest = KNOWLEDGE_BASE[contextDestination];
+        } else {
+          return "Boleh tahu kamu ingin mencari informasi Pantai Cermin, Danau Toba, Gunung Rinjani, atau Labuan Bajo?";
+        }
+
+        // Drafting Response
+        if (detectedIntents.length === 0) {
+          return `${targetDest.name} menawarkan pemandangan ${targetDest.description.toLowerCase()} Harga tiket acuan sekitar ${targetDest.price} Lokasinya di ${targetDest.location}. Ada yang ingin kamu tanyakan lebih spesifik seperti jam buka atau akses ke sana?`;
+        }
+
+        let answers = [];
+        if (detectedIntents.includes("location")) answers.push(`${targetDest.name} berlokasi di ${targetDest.location}`);
+        if (detectedIntents.includes("price")) answers.push(`Harga tiket untuk ${targetDest.name} adalah ${targetDest.price} ${targetDest.priceNotes ? targetDest.priceNotes : ''}`);
+        if (detectedIntents.includes("hours")) answers.push(`Terkait jam operasional, ${targetDest.hours}`);
+        if (detectedIntents.includes("status")) answers.push(`Status akses saat ini: ${targetDest.status}`);
+        if (detectedIntents.includes("activities")) answers.push(`Di ${targetDest.name}, kamu bisa melakukan aktivitas seperti ${targetDest.activities.toLowerCase()} Sebagai catatan: ${targetDest.rules}`);
+
+        if (answers.length > 0) {
+          return answers.join(" ") + " Pastikan untuk mengecek kembali informasi ini ke pengelola resmi sebelum berangkat ya! Ada lagi yang bisa kubantu?";
+        }
+        
+        return "Maaf, aku kurang paham maksudmu. Boleh tanyakan mengenai lokasi, harga, jam buka, status, atau aktivitas di " + targetDest.name + "?";
+      }
+    };
+
+    // --- UI RENDERING & LOGIC ---
+
+    function toggleMobileMenu() {
+      state.isMobileMenuOpen = !state.isMobileMenuOpen;
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('mobile-menu-icon');
+      
+      if (state.isMobileMenuOpen) {
+        menu.classList.remove('hidden');
+        icon.classList.remove('ph-list');
+        icon.classList.add('ph-x');
+      } else {
+        menu.classList.add('hidden');
+        icon.classList.remove('ph-x');
+        icon.classList.add('ph-list');
+      }
+    }
+
+    function navigate(view, destId = null, setContext = false) {
+      state.activeView = view;
+      if (destId) state.selectedDestId = destId;
+      if (setContext && destId) state.chatContext = destId;
+
+      // Hide all views
+      document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+      
+      // Show target view
+      document.getElementById(`view-${view}`).classList.add('active');
+      window.scrollTo(0, 0);
+
+      // Update Nav Styling Desktop
+      const views = ['home', 'destinations', 'about'];
+      views.forEach(v => {
+        const el = document.getElementById(`nav-desktop-${v}`);
+        if (el) {
+          if(v === view) {
+            el.className = 'font-medium text-sky-600';
+          } else {
+            el.className = 'font-medium text-slate-500 hover:text-slate-800';
+          }
+        }
+      });
+
+      // Update Nav Styling Mobile
+      const mobViews = ['home', 'destinations', 'about'];
+      mobViews.forEach(v => {
+        const el = document.getElementById(`nav-mobile-${v}`);
+        if (el) {
+          el.className = `flex flex-col items-center justify-center w-full h-full ${v === view ? 'text-sky-600' : 'text-slate-400'}`;
+        }
+      });
+
+      // Chatbot specific styling for mobile nav
+      const chatIcon = document.getElementById('nav-mobile-chatbot-icon');
+      const chatText = document.getElementById('nav-mobile-chatbot-text');
+      if (view === 'chatbot') {
+        chatIcon.className = 'p-4 rounded-full shadow-lg text-white mb-1 transition-transform bg-sky-700 scale-110';
+        chatText.className = 'text-[10px] font-medium text-sky-600';
+      } else {
+        chatIcon.className = 'p-4 rounded-full shadow-lg text-white mb-1 transition-transform bg-sky-600';
+        chatText.className = 'text-[10px] font-medium text-slate-400';
+      }
+
+      // Specific view rendering logic
+      if (view === 'detail' && destId) {
+        renderDetailView(destId);
+      }
+      
+      if (view === 'chatbot' && setContext && destId) {
+        setupChatContext(destId);
+      }
+    }
+
+    function generateDestinationCardHTML(dest, expanded) {
+      return `
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col hover:shadow-md transition-shadow group">
+          <div class="h-48 overflow-hidden relative">
+            <img src="${dest.image}" alt="${dest.name}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <h4 class="absolute bottom-4 left-4 right-4 text-white font-bold text-lg leading-tight">${dest.name}</h4>
+          </div>
+          <div class="p-5 flex flex-col flex-grow">
+            <div class="flex items-start gap-2 text-slate-500 text-xs mb-3">
+              <i class="ph-fill ph-map-pin flex-shrink-0 mt-0.5 text-sky-500 text-sm"></i>
+              <span class="line-clamp-2">${dest.location}</span>
+            </div>
+            <p class="text-slate-600 text-sm mb-6 flex-grow ${expanded ? '' : 'line-clamp-2'}">
+              ${dest.description}
+            </p>
+            <div class="flex flex-col gap-2 mt-auto">
+              <button onclick="navigate('detail', '${dest.id}')" class="w-full py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition">
+                Lihat Informasi
+              </button>
+              <button onclick="navigate('chatbot', '${dest.id}', true)" class="w-full py-2.5 rounded-xl bg-sky-50 text-sky-700 font-semibold text-sm hover:bg-sky-100 transition flex justify-center items-center gap-2">
+                <i class="ph-fill ph-chat-circle text-base"></i> Tanya Chatbot
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderInitialViews() {
+      // Home Grid
+      const homeGrid = document.getElementById('home-destinations-grid');
+      homeGrid.innerHTML = DESTINATIONS_ARRAY.map(dest => generateDestinationCardHTML(dest, false)).join('');
+
+      // Destinations Grid
+      const destGrid = document.getElementById('all-destinations-grid');
+      destGrid.innerHTML = DESTINATIONS_ARRAY.map(dest => generateDestinationCardHTML(dest, true)).join('');
+      
+      // Initial Chat Render
+      renderChatMessages();
+    }
+
+    function renderDetailView(id) {
+      const dest = KNOWLEDGE_BASE[id];
+      if(!dest) return;
+
+      document.getElementById('detail-image').src = dest.image;
+      document.getElementById('detail-name').innerText = dest.name;
+      document.getElementById('detail-location').innerText = dest.location;
+      document.getElementById('detail-desc').innerText = dest.description;
+      document.getElementById('detail-price').innerText = dest.price;
+      
+      const notesContainer = document.getElementById('detail-price-notes-container');
+      if (dest.priceNotes) {
+        document.getElementById('detail-price-notes').innerText = dest.priceNotes;
+        notesContainer.classList.remove('hidden');
+      } else {
+        notesContainer.classList.add('hidden');
+      }
+
+      document.getElementById('detail-hours').innerText = dest.hours;
+      document.getElementById('detail-status').innerText = dest.status;
+      document.getElementById('detail-activities').innerText = dest.activities;
+      document.getElementById('detail-rules').innerText = dest.rules;
+
+      const sourcesList = document.getElementById('detail-sources');
+      sourcesList.innerHTML = dest.sources.map(src => `<li class="flex items-center gap-2 text-sm text-slate-500"><i class="ph ph-arrow-up-right"></i> ${src}</li>`).join('');
+
+      document.getElementById('detail-chat-btn').onclick = () => navigate('chatbot', id, true);
+    }
+
+    function setupChatContext(id) {
+      const dest = KNOWLEDGE_BASE[id];
+      const banner = document.getElementById('chat-context-banner');
+      const contextText = document.getElementById('chat-context-text');
+      
+      banner.classList.remove('hidden');
+      contextText.innerText = `Berbicara tentang ${dest.name}`;
+      
+      // Auto trigger a message after delay
+      setTimeout(() => {
+        processSendChat(`Informasi tentang ${dest.name}`);
+      }, 500);
+    }
+
+    function renderChatMessages() {
+      const container = document.getElementById('chat-messages');
+      container.innerHTML = state.messages.map(msg => {
+        const isUser = msg.sender === 'user';
+        return `
+          <div class="flex ${isUser ? 'justify-end' : 'justify-start'}">
+            ${!isUser ? `
+              <div class="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center text-white mr-2 flex-shrink-0 mt-1">
+                <i class="ph-fill ph-robot text-base"></i>
+              </div>
+            ` : ''}
+            <div class="max-w-[80%] rounded-2xl p-4 text-sm md:text-base ${isUser ? 'bg-sky-600 text-white rounded-tr-sm' : 'bg-white border border-slate-200 text-slate-700 rounded-tl-sm shadow-sm'}">
+              ${msg.text}
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Scroll to bottom
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function processSendChat(text) {
+      if (!text.trim()) return;
+
+      // Add user message
+      state.messages.push({ id: Date.now(), sender: 'user', text: text });
+      renderChatMessages();
+      
+      // Show typing
+      const submitBtn = document.getElementById('chat-submit-btn');
+      const inputEl = document.getElementById('chat-input');
+      const typingEl = document.getElementById('typing-indicator');
+      const chatContainer = document.getElementById('chat-messages');
+      
+      submitBtn.disabled = true;
+      inputEl.disabled = true;
+      typingEl.classList.remove('hidden');
+      chatContainer.scrollTop = chatContainer.scrollHeight + 100;
+
+      // Simulate Bot processing
+      setTimeout(() => {
+        const botResponseText = CHATBOT_LOGIC.processMessage(text, state.chatContext);
+        state.messages.push({ id: Date.now() + 1, sender: 'bot', text: botResponseText });
+        
+        // Hide typing, enable input
+        typingEl.classList.add('hidden');
+        submitBtn.disabled = false;
+        inputEl.disabled = false;
+        inputEl.focus();
+        
+        renderChatMessages();
+      }, 1000 + Math.random() * 1000);
+    }
+
+    function handleChatSubmit(e) {
+      e.preventDefault();
+      const inputEl = document.getElementById('chat-input');
+      const text = inputEl.value;
+      inputEl.value = '';
+      processSendChat(text);
+    }
+
+    function handleQuickReply(text) {
+      processSendChat(text);
+    }
+
+    // Initialize the app on load
+    window.onload = () => {
+      renderInitialViews();
+      // Add input event listener to handle button disable state
+      document.getElementById('chat-input').addEventListener('input', function(e) {
+        document.getElementById('chat-submit-btn').disabled = e.target.value.trim() === '';
+      });
+    };
+
+  </script>
+</body>
+</html>
